@@ -100,14 +100,68 @@
   </footer>
 
   <script>
-    function searchStays() {
-      const location = document.getElementById('location').value.trim();
-      if (!location) {
-        alert('Please enter a destination.');
-        return;
-      }
-      alert('Searching stays in ' + location + '. Property search will be connected soon.');
+    
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://cotreinqzluwgyiigffm.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+  async function searchStays() {
+    const location = document.getElementById('location').value.trim();
+
+    if (!location) {
+      alert('Please enter a destination.');
+      return;
     }
-  </script>
+
+    const { data, error } = await supabaseClient
+      .from('properties')
+      .select('*')
+      .eq('status', 'published')
+      .ilike('location', `%${location}%`);
+
+    if (error) {
+      alert('Unable to search properties. Please try again.');
+      console.error(error);
+      return;
+    }
+
+    const propertyList = document.getElementById('propertyList');
+
+    if (!data.length) {
+      propertyList.innerHTML = '<p>No properties found in this location yet.</p>';
+      return;
+    }
+
+    propertyList.innerHTML = data.map(property => `
+      <article class="property">
+        <div class="details">
+          <h3>${escapeHTML(property.title)}</h3>
+          <p>${escapeHTML(property.location || '')}</p>
+          <div class="price">KES ${Number(property.price_per_night).toLocaleString()} per night</div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]);
+  }
+</script>
+</body>
+</html>
+
+  <script>
 </body>
 </html>
