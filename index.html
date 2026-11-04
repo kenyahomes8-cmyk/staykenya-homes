@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <title>StayKenya Homes | Find Your Perfect Stay</title>
+  <meta name="description" content="Discover beautiful homes, apartments and holiday stays across Kenya.">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; color: #222; background: #fff; }
+    header { padding: 18px 6%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+    .logo { color: #087e70; font-size: 23px; font-weight: 800; }
+    nav a { margin-left: 18px; color: #333; text-decoration: none; font-size: 14px; }
+    .hero { padding: 65px 6%; background: #f2f8f7; text-align: center; }
+    .hero h1 { font-size: clamp(30px, 5vw, 48px); margin: 0 0 15px; }
+    .hero p { color: #666; font-size: 17px; }
+    .search { background: white; max-width: 850px; margin: 28px auto 0; padding: 12px; border-radius: 12px; display: flex; gap: 10px; box-shadow: 0 4px 20px #00000010; }
+    .search input { flex: 1; min-width: 0; border: 0; padding: 12px; font-size: 15px; outline: none; }
+    button { background: #087e70; color: white; border: 0; border-radius: 8px; padding: 13px 22px; font-weight: bold; cursor: pointer; }
+    main { padding: 40px 6%; }
+    .section-title { font-size: 26px; margin-bottom: 8px; }
+    .muted { color: #777; }
+    .destinations { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 25px 0 45px; }
+    .destination { background: #f5f7f7; border-radius: 12px; padding: 22px 15px; font-weight: bold; }
+    .properties { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; margin-top: 25px; }
+    .property { border: 1px solid #eee; border-radius: 13px; overflow: hidden; }
+    .photo { height: 175px; background: linear-gradient(135deg,#d8e9e5,#a8c9c0); display: grid; place-items: center; color: #42665e; }
+    .details { padding: 17px; }
+    .details h3 { margin: 0 0 8px; }
+    .price { font-weight: bold; color: #087e70; margin-top: 12px; }
+    .host { background: #f2f8f7; border-radius: 14px; padding: 28px; margin-top: 45px; }
+    footer { padding: 30px 6%; background: #172b29; color: white; text-align: center; margin-top: 45px; }
+    @media(max-width:600px) {
+      header { padding: 15px 5%; }
+      nav a { margin-left: 9px; font-size: 12px; }
+      .hero { padding: 48px 5%; }
+      .search { flex-direction: column; }
+      .search button { width: 100%; }
+      main { padding: 30px 5%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">StayKenya Homes</div>
+    <nav>
+      <a href="#stays">Explore</a>
+      <a href="#host">Become a host</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Find a place that feels like home.</h1>
+    <p>Discover beautiful stays across Kenya.</p>
+    <div class="search">
+      <input id="location" type="text" placeholder="Where are you going?">
+      <input id="guests" type="number" min="1" placeholder="Guests">
+      <button onclick="searchStays()">Search stays</button>
+    </div>
+  </section>
+
+  <main>
+    <h2 class="section-title">Explore Kenya</h2>
+    <p class="muted">Discover popular destinations for your next stay.</p>
+    <div class="destinations">
+      <div class="destination">🌴 Mombasa</div>
+      <div class="destination">🌊 Diani</div>
+      <div class="destination">🌿 Naivasha</div>
+      <div class="destination">🏙️ Nakuru</div>
+    </div>
+
+    <section id="stays">
+      <h2 class="section-title">Featured stays</h2>
+      <p class="muted">Beautiful places to stay, all in one place.</p>
+      <div class="properties" id="propertyList">
+        <article class="property">
+          <div class="photo">Property photo coming soon</div>
+          <div class="details">
+            <h3>Cozy stays in Kenya</h3>
+            <p class="muted">Discover your next holiday home.</p>
+            <div class="price">Prices in KES</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="host" id="host">
+      <h2>Have a property in Kenya?</h2>
+      <p>Join StayKenya Homes and introduce your property to travellers.</p>
+      <button onclick="alert('Host registration will be available soon.')">Become a host</button>
+    </section>
+  </main>
+
+  <footer>
+    <strong>StayKenya Homes</strong>
+    <p>Discover Kenya. Find your stay.</p>
+    <small>© 2026 StayKenya Homes</small>
+  </footer>
+
+  <script>
+    function searchStays() {
+      const location = document.getElementById('location').value.trim();
+      if (!location) {
+        alert('Please enter a destination.');
+        return;
+      }
+      alert('Searching stays in ' + location + '. Property search will be connected soon.');
+    }
+  </script>
+</body>
+</html>
