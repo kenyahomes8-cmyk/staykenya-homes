@@ -4,178 +4,316 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#087e70">
+
   <title>StayKenya Homes | Find Your Perfect Stay</title>
-  <meta name="description" content="Discover beautiful homes, apartments and holiday stays across Kenya.">
+
+  <meta name="description" content="Find apartments, holiday homes and accommodation across Kenya.">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; color: #222; background: #fff; }
-    header { padding: 18px 6%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-    .logo { color: #087e70; font-size: 23px; font-weight: 800; }
-    nav a { margin-left: 18px; color: #333; text-decoration: none; font-size: 14px; }
-    .hero { padding: 65px 6%; background: #f2f8f7; text-align: center; }
-    .hero h1 { font-size: clamp(30px, 5vw, 48px); margin: 0 0 15px; }
-    .hero p { color: #666; font-size: 17px; }
-    .search { background: white; max-width: 850px; margin: 28px auto 0; padding: 12px; border-radius: 12px; display: flex; gap: 10px; box-shadow: 0 4px 20px #00000010; }
-    .search input { flex: 1; min-width: 0; border: 0; padding: 12px; font-size: 15px; outline: none; }
-    button { background: #087e70; color: white; border: 0; border-radius: 8px; padding: 13px 22px; font-weight: bold; cursor: pointer; }
-    main { padding: 40px 6%; }
-    .section-title { font-size: 26px; margin-bottom: 8px; }
-    .muted { color: #777; }
-    .destinations { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 25px 0 45px; }
-    .destination { background: #f5f7f7; border-radius: 12px; padding: 22px 15px; font-weight: bold; }
-    .properties { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; margin-top: 25px; }
-    .property { border: 1px solid #eee; border-radius: 13px; overflow: hidden; }
-    .photo { height: 175px; background: linear-gradient(135deg,#d8e9e5,#a8c9c0); display: grid; place-items: center; color: #42665e; }
-    .details { padding: 17px; }
-    .details h3 { margin: 0 0 8px; }
-    .price { font-weight: bold; color: #087e70; margin-top: 12px; }
-    .host { background: #f2f8f7; border-radius: 14px; padding: 28px; margin-top: 45px; }
-    footer { padding: 30px 6%; background: #172b29; color: white; text-align: center; margin-top: 45px; }
-    @media(max-width:600px) {
-      header { padding: 15px 5%; }
-      nav a { margin-left: 9px; font-size: 12px; }
-      .hero { padding: 48px 5%; }
-      .search { flex-direction: column; }
-      .search button { width: 100%; }
-      main { padding: 30px 5%; }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #24312f;
+      background: #fff;
+    }
+
+    header {
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo {
+      color: #087e70;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    nav a {
+      margin-left: 18px;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 75px 6%;
+      text-align: center;
+      background: #f0f7f5;
+    }
+
+    .hero h1 {
+      font-size: clamp(30px, 5vw, 48px);
+      margin: 0 0 14px;
+    }
+
+    .hero p {
+      color: #687773;
+    }
+
+    .search {
+      max-width: 850px;
+      margin: 30px auto 0;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px #00000010;
+    }
+
+    .search input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #eee;
+      border-radius: 7px;
+      padding: 14px;
+      font-size: 15px;
+    }
+
+    button {
+      background: #087e70;
+      color: white;
+      border: 0;
+      border-radius: 8px;
+      padding: 14px 22px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #06665b;
+    }
+
+    main {
+      padding: 45px 6%;
+    }
+
+    .section-title {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .muted {
+      color: #78827f;
+    }
+
+    .destinations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 25px 0 50px;
+    }
+
+    .destination {
+      background: #f2f6f5;
+      padding: 23px 15px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    .properties {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px;
+      margin-top: 25px;
+    }
+
+    .property {
+      border: 1px solid #eee;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .gallery {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      background: #edf3f1;
+    }
+
+    .gallery img {
+      width: 100%;
+      min-width: 100%;
+      height: 210px;
+      object-fit: cover;
+      scroll-snap-align: start;
+    }
+
+    .no-photo {
+      width: 100%;
+      height: 210px;
+      display: grid;
+      place-items: center;
+      color: #647b75;
+    }
+
+    .details {
+      padding: 17px;
+    }
+
+    .details h3 {
+      margin: 0 0 9px;
+      font-size: 19px;
+    }
+
+    .features {
+      color: #687773;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .price {
+      color: #087e70;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 14px;
+    }
+
+    .host {
+      background: #f0f7f5;
+      padding: 30px;
+      border-radius: 14px;
+      margin-top: 50px;
+    }
+
+    footer {
+      background: #172b29;
+      color: white;
+      padding: 30px 6%;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .message {
+      padding: 20px;
+      color: #687773;
+    }
+
+    @media(max-width: 600px) {
+      header {
+        padding: 15px 5%;
+      }
+
+      nav a {
+        margin-left: 8px;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 50px 5%;
+      }
+
+      .search {
+        flex-direction: column;
+      }
+
+      .search button {
+        width: 100%;
+      }
+
+      main {
+        padding: 30px 5%;
+      }
     }
   </style>
 </head>
-<body>
-  <header>
-    <div class="logo">StayKenya Homes</div>
-    <nav>
-      <a href="#stays">Explore</a>
-      <a href="#host">Become a host</a>
-    </nav>
-  </header>
 
-  <section class="hero">
-    <h1>Find a place that feels like home.</h1>
-    <p>Discover beautiful stays across Kenya.</p>
-    <div class="search">
-      <input id="location" type="text" placeholder="Where are you going?">
-      <input id="guests" type="number" min="1" placeholder="Guests">
-      <button onclick="searchStays()">Search stays</button>
+<body>
+
+<header>
+  <div class="logo">StayKenya Homes</div>
+
+  <nav>
+    <a href="#stays">Explore</a>
+    <a href="#host">Become a host</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Find a place that feels like home.</h1>
+  <p>Discover beautiful apartments and holiday homes across Kenya.</p>
+
+  <div class="search">
+    <input
+      id="location"
+      type="text"
+      placeholder="Where are you going? e.g. Nyali"
+    >
+
+    <input
+      id="guests"
+      type="number"
+      min="1"
+      placeholder="Guests"
+    >
+
+    <button onclick="searchStays()">Search stays</button>
+  </div>
+</section>
+
+<main>
+
+  <h2 class="section-title">Explore Kenya</h2>
+  <p class="muted">Find your next destination.</p>
+
+  <div class="destinations">
+    <div class="destination">🌴 Mombasa</div>
+    <div class="destination">🌊 Diani</div>
+    <div class="destination">🌿 Naivasha</div>
+    <div class="destination">🏙️ Nakuru</div>
+  </div>
+
+  <section id="stays">
+    <h2 class="section-title">Featured stays</h2>
+    <p class="muted">Discover available properties across Kenya.</p>
+
+    <div class="properties" id="propertyList">
+      <p class="message">Loading properties...</p>
     </div>
   </section>
 
-  <main>
-    <h2 class="section-title">Explore Kenya</h2>
-    <p class="muted">Discover popular destinations for your next stay.</p>
-    <div class="destinations">
-      <div class="destination">🌴 Mombasa</div>
-      <div class="destination">🌊 Diani</div>
-      <div class="destination">🌿 Naivasha</div>
-      <div class="destination">🏙️ Nakuru</div>
-    </div>
+  <section class="host" id="host">
+    <h2>Have a property in Kenya?</h2>
+    <p>Join StayKenya Homes and introduce your property to travellers.</p>
+    <p>List your apartment or holiday home with us.</p>
+    <button onclick="alert('Host registration coming soon!')">
+      Become a host
+    </button>
+  </section>
 
-    <section id="stays">
-      <h2 class="section-title">Featured stays</h2>
-      <p class="muted">Beautiful places to stay, all in one place.</p>
-      <div class="properties" id="propertyList">
-        <article class="property">
-          <div class="photo">Property photo coming soon</div>
-          <div class="details">
-            <h3>Cozy stays in Kenya</h3>
-            <p class="muted">Discover your next holiday home.</p>
-            <div class="price">Prices in KES</div>
-          </div>
-        </article>
-      </div>
-    </section>
+</main>
 
-    <section class="host" id="host">
-      <h2>Have a property in Kenya?</h2>
-      <p>Join StayKenya Homes and introduce your property to travellers.</p>
-      <button onclick="alert('Host registration will be available soon.')">Become a host</button>
-    </section>
-  </main>
-
-  <footer>
-    <strong>StayKenya Homes</strong>
-    <p>Discover Kenya. Find your stay.</p>
-    <small>© 2026 StayKenya Homes</small>
-  </footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<footer>
+  <strong>StayKenya Homes</strong>
+  <p>Discover Kenya. Find your stay.</p>
+  <small>© 2026 StayKenya Homes</small>
+</footer>
 
 <script>
-const SUPABASE_URL = 'https://cotreinqzluwgyiigffm.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
+const SUPABASE_URL =
+  'https://cotreinqzluwgyiigffm.supabase.co';
+
+const SUPABASE_ANON_KEY =
+  'PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE';
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
-async function searchStays() {
-  const location = document.getElementById('location').value.trim();
-  const propertyList = document.getElementById('propertyList');
-
-  if (!location) {
-    alert('Please enter a destination.');
-    return;
-  }
-
-  propertyList.innerHTML = '<p>Searching properties...</p>';
-
-  const { data, error } = await supabaseClient
-    .from('properties')
-    .select('*')
-    .eq('status', 'published')
-    .or(`county.ilike.%${location}%,town.ilike.%${location}%`);
-
-  if (error) {
-  console.error(error);
-  propertyList.innerHTML = `<p>Search error: ${escapeHTML(error.message)}</p>`;
-  return;
-}
-  if (!data || data.length === 0) {
-    propertyList.innerHTML = '<p>No properties found in this location yet.</p>';
-    return;
-  }
-
-  const propertyIds = data.map(property => property.id);
-
-const { data: photos, error: photoError } = await supabaseClient
-  .from('property_images')
-  .select('property_id, image_url, display_order')
-  .in('property_id', propertyIds)
-  .order('display_order', { ascending: true });
-
-if (photoError) {
-  console.error(photoError);
-}
-
-propertyList.innerHTML = data.map(property => {
-  const propertyPhotos = (photos || []).filter(
-    photo => photo.property_id === property.id
-  );
-
-  return `
-    <article class="property">
-      ${
-        propertyPhotos.length
-          ? `<img src="${escapeHTML(propertyPhotos[0].image_url)}"
-               alt="${escapeHTML(property.title)}"
-               style="width:100%;height:200px;object-fit:cover;">`
-          : `<div class="photo">Property photo coming soon</div>`
-      }
-      <div class="details">
-        <h3>${escapeHTML(property.title)}</h3>
-        <p>${escapeHTML(property.location || '')}</p>
-        <div class="price">
-          KES ${Number(property.price).toLocaleString()} per night
-        </div>
-      </div>
-    </article>
-  `;
-}).join('');
-}
-
 function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, character => ({
+  return String(value ?? '').replace(/[&<>"']/g, character => ({
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -183,8 +321,116 @@ function escapeHTML(value) {
     "'": '&#39;'
   })[character]);
 }
+
+async function searchStays() {
+  const location = document
+    .getElementById('location')
+    .value.trim();
+
+  const guests = Number(
+    document.getElementById('guests').value
+  );
+
+  const propertyList = document.getElementById('propertyList');
+
+  propertyList.innerHTML =
+    '<p class="message">Searching properties...</p>';
+
+  let query = supabaseClient
+    .from('properties')
+    .select('*')
+    .eq('status', 'published');
+
+  if (location) {
+    query = query.ilike('town', `%${location}%`);
+  }
+
+  if (guests > 0) {
+    query = query.gte('max_guests', guests);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error(error);
+    propertyList.innerHTML =
+      `<p class="message">Search error: ${escapeHTML(error.message)}</p>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    propertyList.innerHTML =
+      '<p class="message">No properties found. Try another destination.</p>';
+    return;
+  }
+
+  const propertyIds = data.map(property => property.id);
+
+  const { data: photos, error: photoError } =
+    await supabaseClient
+      .from('property_images')
+      .select('property_id, image_url, display_order')
+      .in('property_id', propertyIds)
+      .order('display_order', { ascending: true });
+
+  if (photoError) {
+    console.error('Photo error:', photoError);
+  }
+
+  propertyList.innerHTML = data.map(property => {
+    const propertyPhotos = (photos || []).filter(
+      photo => photo.property_id === property.id
+    );
+
+    const gallery = propertyPhotos.length
+      ? propertyPhotos.map(photo => `
+          <img
+            src="${escapeHTML(photo.image_url)}"
+            alt="${escapeHTML(property.title)}"
+            loading="lazy"
+          >
+        `).join('')
+      : '<div class="no-photo">Property photos coming soon</div>';
+
+    const price = Number(property.price);
+    const priceDisplay = Number.isFinite(price)
+      ? price.toLocaleString()
+      : 'Price unavailable';
+
+    return `
+      <article class="property">
+
+        <div class="gallery">
+          ${gallery}
+        </div>
+
+        <div class="details">
+
+          <h3>${escapeHTML(property.title)}</h3>
+
+          <p class="muted">
+            ${escapeHTML(property.town || '')}
+          </p>
+
+          <div class="features">
+            ${property.bedrooms ?? '—'} bedrooms
+            · Up to ${property.max_guests ?? '—'} guests
+          </div>
+
+          <div class="price">
+            KES ${priceDisplay} per night
+          </div>
+
+        </div>
+
+      </article>
+    `;
+  }).join('');
+}
+
+// Load published properties when the homepage opens.
+searchStays();
 </script>
 
 </body>
 </html>
-  
