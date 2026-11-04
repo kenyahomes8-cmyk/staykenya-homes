@@ -127,11 +127,10 @@ async function searchStays() {
     .ilike('location', `%${location}%`);
 
   if (error) {
-    console.error(error);
-    propertyList.innerHTML = '<p>Unable to search. Please try again.</p>';
-    return;
-  }
-
+  console.error(error);
+  propertyList.innerHTML = `<p>Search error: ${escapeHTML(error.message)}</p>`;
+  return;
+}
   if (!data || data.length === 0) {
     propertyList.innerHTML = '<p>No properties found in this location yet.</p>';
     return;
