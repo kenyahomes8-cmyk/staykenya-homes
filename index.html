@@ -136,17 +136,42 @@ async function searchStays() {
     return;
   }
 
-  propertyList.innerHTML = data.map(property => `
+  const propertyIds = data.map(property => property.id);
+
+const { data: photos, error: photoError } = await supabaseClient
+  .from('property_images')
+  .select('property_id, image_url, display_order')
+  .in('property_id', propertyIds)
+  .order('display_order', { ascending: true });
+
+if (photoError) {
+  console.error(photoError);
+}
+
+propertyList.innerHTML = data.map(property => {
+  const propertyPhotos = (photos || []).filter(
+    photo => photo.property_id === property.id
+  );
+
+  return `
     <article class="property">
+      ${
+        propertyPhotos.length
+          ? `<img src="${escapeHTML(propertyPhotos[0].image_url)}"
+               alt="${escapeHTML(property.title)}"
+               style="width:100%;height:200px;object-fit:cover;">`
+          : `<div class="photo">Property photo coming soon</div>`
+      }
       <div class="details">
         <h3>${escapeHTML(property.title)}</h3>
         <p>${escapeHTML(property.location || '')}</p>
         <div class="price">
-          KES ${Number(property.price_per_night).toLocaleString()} per night
+          KES ${Number(property.price).toLocaleString()} per night
         </div>
       </div>
     </article>
-  `).join('');
+  `;
+}).join('');
 }
 
 function escapeHTML(value) {
