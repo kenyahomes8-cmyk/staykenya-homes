@@ -98,70 +98,69 @@
     <p>Discover Kenya. Find your stay.</p>
     <small>© 2026 StayKenya Homes</small>
   </footer>
-
-  <script>
-    
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-  const SUPABASE_URL = 'https://cotreinqzluwgyiigffm.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
+const SUPABASE_URL = 'https://cotreinqzluwgyiigffm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-  async function searchStays() {
-    const location = document.getElementById('location').value.trim();
+async function searchStays() {
+  const location = document.getElementById('location').value.trim();
+  const propertyList = document.getElementById('propertyList');
 
-    if (!location) {
-      alert('Please enter a destination.');
-      return;
-    }
+  if (!location) {
+    alert('Please enter a destination.');
+    return;
+  }
 
-    const { data, error } = await supabaseClient
-      .from('properties')
-      .select('*')
-      .eq('status', 'published')
-      .ilike('location', `%${location}%`);
+  propertyList.innerHTML = '<p>Searching properties...</p>';
 
-    if (error) {
-      alert('Unable to search properties. Please try again.');
-      console.error(error);
-      return;
-    }
+  const { data, error } = await supabaseClient
+    .from('properties')
+    .select('*')
+    .eq('status', 'published')
+    .ilike('location', `%${location}%`);
 
-    const propertyList = document.getElementById('propertyList');
+  if (error) {
+    console.error(error);
+    propertyList.innerHTML = '<p>Unable to search. Please try again.</p>';
+    return;
+  }
 
-    if (!data.length) {
-      propertyList.innerHTML = '<p>No properties found in this location yet.</p>';
-      return;
-    }
+  if (!data || data.length === 0) {
+    propertyList.innerHTML = '<p>No properties found in this location yet.</p>';
+    return;
+  }
 
-    propertyList.innerHTML = data.map(property => `
-      <article class="property">
-        <div class="details">
-          <h3>${escapeHTML(property.title)}</h3>
-          <p>${escapeHTML(property.location || '')}</p>
-          <div class="price">KES ${Number(property.price_per_night).toLocaleString()} per night</div>
+  propertyList.innerHTML = data.map(property => `
+    <article class="property">
+      <div class="details">
+        <h3>${escapeHTML(property.title)}</h3>
+        <p>${escapeHTML(property.location || '')}</p>
+        <div class="price">
+          KES ${Number(property.price_per_night).toLocaleString()} per night
         </div>
-      </article>
-    `).join('');
-  }
+      </div>
+    </article>
+  `).join('');
+}
 
-  function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, character => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    })[character]);
-  }
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[character]);
+}
 </script>
-</body>
-</html>
 
-  <script>
 </body>
 </html>
+  
