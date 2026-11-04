@@ -124,7 +124,7 @@ async function searchStays() {
     .from('properties')
     .select('*')
     .eq('status', 'published')
-    .ilike('location', `%${location}%`);
+    .or(`county.ilike.%${location}%,town.ilike.%${location}%`);
 
   if (error) {
   console.error(error);
