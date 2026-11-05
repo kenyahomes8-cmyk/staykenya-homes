@@ -1,436 +1,262 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#087e70">
-
-  <title>StayKenya Homes | Find Your Perfect Stay</title>
-
-  <meta name="description" content="Find apartments, holiday homes and accommodation across Kenya.">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pan-African Express Loans</title>
+  <!-- Load Supabase JS Client via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --bg-dark: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      color: #24312f;
-      background: #fff;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    
+    .loan-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; max-width: 520px; width: 100%; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); }
+    .header { margin-bottom: 1.5rem; text-align: center; }
+    .header h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+    .header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
 
-    header {
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-    }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-main); }
+    select, input { width: 100%; padding: 0.75rem 1rem; background-color: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 1rem; outline: none; transition: border-color 0.2s; }
+    select:focus, input:focus { border-color: var(--primary); }
 
-    .logo {
-      color: #087e70;
-      font-size: 23px;
-      font-weight: 800;
-    }
+    .range-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+    .amount-display { font-size: 1.75rem; font-weight: 800; color: #fff; text-align: center; padding: 0.5rem 0; }
 
-    nav a {
-      margin-left: 18px;
-      text-decoration: none;
-      color: #333;
-      font-size: 14px;
-    }
+    .btn-submit { width: 100%; padding: 0.875rem; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s; }
+    .btn-submit:hover { background-color: var(--primary-hover); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .hero {
-      padding: 75px 6%;
-      text-align: center;
-      background: #f0f7f5;
-    }
-
-    .hero h1 {
-      font-size: clamp(30px, 5vw, 48px);
-      margin: 0 0 14px;
-    }
-
-    .hero p {
-      color: #687773;
-    }
-
-    .search {
-      max-width: 850px;
-      margin: 30px auto 0;
-      padding: 12px;
-      display: flex;
-      gap: 10px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px #00000010;
-    }
-
-    .search input {
-      flex: 1;
-      min-width: 0;
-      border: 1px solid #eee;
-      border-radius: 7px;
-      padding: 14px;
-      font-size: 15px;
-    }
-
-    button {
-      background: #087e70;
-      color: white;
-      border: 0;
-      border-radius: 8px;
-      padding: 14px 22px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #06665b;
-    }
-
-    main {
-      padding: 45px 6%;
-    }
-
-    .section-title {
-      font-size: 27px;
-      margin-bottom: 8px;
-    }
-
-    .muted {
-      color: #78827f;
-    }
-
-    .destinations {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
-      margin: 25px 0 50px;
-    }
-
-    .destination {
-      background: #f2f6f5;
-      padding: 23px 15px;
-      border-radius: 12px;
-      font-weight: bold;
-    }
-
-    .properties {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 22px;
-      margin-top: 25px;
-    }
-
-    .property {
-      border: 1px solid #eee;
-      border-radius: 14px;
-      overflow: hidden;
-      background: white;
-    }
-
-    .gallery {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      background: #edf3f1;
-    }
-
-    .gallery img {
-      width: 100%;
-      min-width: 100%;
-      height: 210px;
-      object-fit: cover;
-      scroll-snap-align: start;
-    }
-
-    .no-photo {
-      width: 100%;
-      height: 210px;
-      display: grid;
-      place-items: center;
-      color: #647b75;
-    }
-
-    .details {
-      padding: 17px;
-    }
-
-    .details h3 {
-      margin: 0 0 9px;
-      font-size: 19px;
-    }
-
-    .features {
-      color: #687773;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    .price {
-      color: #087e70;
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 14px;
-    }
-
-    .host {
-      background: #f0f7f5;
-      padding: 30px;
-      border-radius: 14px;
-      margin-top: 50px;
-    }
-
-    footer {
-      background: #172b29;
-      color: white;
-      padding: 30px 6%;
-      text-align: center;
-      margin-top: 50px;
-    }
-
-    .message {
-      padding: 20px;
-      color: #687773;
-    }
-
-    @media(max-width: 600px) {
-      header {
-        padding: 15px 5%;
-      }
-
-      nav a {
-        margin-left: 8px;
-        font-size: 12px;
-      }
-
-      .hero {
-        padding: 50px 5%;
-      }
-
-      .search {
-        flex-direction: column;
-      }
-
-      .search button {
-        width: 100%;
-      }
-
-      main {
-        padding: 30px 5%;
-      }
-    }
+    .alert { padding: 1rem; border-radius: 8px; margin-top: 1rem; display: none; font-size: 0.875rem; line-height: 1.4; }
+    .alert-success { background: #064e3b; color: #a7f3d0; border: 1px solid #059669; }
+    .alert-error { background: #7f1d1d; color: #fecaca; border: 1px solid #dc2626; }
   </style>
 </head>
-
 <body>
 
-<header>
-  <div class="logo">StayKenya Homes</div>
-
-  <nav>
-    <a href="#stays">Explore</a>
-    <a href="#host">Become a host</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <h1>Find a place that feels like home.</h1>
-  <p>Discover beautiful apartments and holiday homes across Kenya.</p>
-
-  <div class="search">
-    <input
-      id="location"
-      type="text"
-      placeholder="Where are you going? e.g. Nyali"
-    >
-
-    <input
-      id="guests"
-      type="number"
-      min="1"
-      placeholder="Guests"
-    >
-
-    <button onclick="searchStays()">Search stays</button>
-  </div>
-</section>
-
-<main>
-
-  <h2 class="section-title">Explore Kenya</h2>
-  <p class="muted">Find your next destination.</p>
-
-  <div class="destinations">
-    <div class="destination">🌴 Mombasa</div>
-    <div class="destination">🌊 Diani</div>
-    <div class="destination">🌿 Naivasha</div>
-    <div class="destination">🏙️ Nakuru</div>
+<div class="loan-card">
+  <div class="header">
+    <h1 id="ui-title">Instant Personal Loan</h1>
+    <p id="ui-subtitle">Select your country to start your dynamic application</p>
   </div>
 
-  <section id="stays">
-    <h2 class="section-title">Featured stays</h2>
-    <p class="muted">Discover available properties across Kenya.</p>
-
-    <div class="properties" id="propertyList">
-      <p class="message">Loading properties...</p>
+  <form id="loanForm">
+    <!-- Country Selector -->
+    <div class="form-group">
+      <label id="lbl-country" for="countrySelect">Select Target Country</label>
+      <select id="countrySelect" required>
+        <option value="" disabled selected>-- Choose Country --</option>
+        <option value="KE">Kenya</option>
+        <option value="TZ">Tanzania</option>
+        <option value="UG">Uganda</option>
+        <option value="ZM">Zambia</option>
+        <option value="CD">DR Congo</option>
+        <option value="BW">Botswana</option>
+        <option value="ZA">South Africa</option>
+      </select>
     </div>
-  </section>
 
-  <section class="host" id="host">
-    <h2>Have a property in Kenya?</h2>
-    <p>Join StayKenya Homes and introduce your property to travellers.</p>
-    <p>List your apartment or holiday home with us.</p>
-    <button onclick="alert('Host registration coming soon!')">
-      Become a host
-    </button>
-  </section>
+    <!-- Applicant Name -->
+    <div class="form-group">
+      <label id="lbl-name" for="fullName">Full Name</label>
+      <input type="text" id="fullName" placeholder="Jane Doe" required />
+    </div>
 
-</main>
+    <!-- Phone Number -->
+    <div class="form-group">
+      <label id="lbl-phone" for="phone">Mobile Phone Number</label>
+      <input type="tel" id="phone" placeholder="+254..." required />
+    </div>
 
-<footer>
-  <strong>StayKenya Homes</strong>
-  <p>Discover Kenya. Find your stay.</p>
-  <small>© 2026 StayKenya Homes</small>
-</footer>
+    <!-- Amount Slider -->
+    <div class="form-group range-wrap">
+      <label id="lbl-amount" for="loanAmount">Requested Loan Amount</label>
+      <div class="amount-display" id="amountDisplay">0</div>
+      <input type="range" id="loanAmount" min="100" max="10000" step="50" value="1000" />
+    </div>
+
+    <button type="submit" class="btn-submit" id="btn-submit">Apply Immediately</button>
+  </form>
+
+  <div id="responseAlert" class="alert"></div>
+</div>
 
 <script>
-const SUPABASE_URL =
-  'https://cotreinqzluwgyiigffm.supabase.co';
+  // Replace these with your actual Supabase URL and Public Anon Key
+  const SUPABASE_URL = '; https://cotreinqzluwgyiigffm.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
+  
+  // Initialize Supabase Client
+  const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const SUPABASE_ANON_KEY =
-  'PASTE_YOUR_EXISTING_PUBLISHABLE_KEY_HERE';
+  // Dynamic Country Configuration (Languages, Dial Codes, Currencies, Ranges)
+  const countryConfig = {
+    KE: {
+      currency: "KES", symbol: "KSh", dialCode: "+254", min: 1000, max: 150000, step: 1000,
+      lang: {
+        title: "Mkopo wa Haraka",
+        subtitle: "Omba mkopo wako kwa dakika chache tu",
+        country: "Chagua Nchi", name: "Jina Kamili", phone: "Nambari ya Simu",
+        amount: "Kiasi cha Mkopo", submit: "Tuma Maombi Sasa",
+        success: "Imefanikiwa! Maombi yako ya mkopo yamepokelewa. Tutakupigia simu mara moja."
+      }
+    },
+    TZ: {
+      currency: "TZS", symbol: "TSh", dialCode: "+255", min: 20000, max: 3000000, step: 10000,
+      lang: {
+        title: "Mkopo wa Papo Kwa Papo",
+        subtitle: "Pata mkopo kwa urahisi na haraka",
+        country: "Chagua Nchi", name: "Jina Bufuli", phone: "Nambari ya Simu",
+        amount: "Kiasi cha Mkopo", submit: "Omba Mkopo Sasa",
+        success: "Hongera! Ombi lako limepokelewa kikamilifu."
+      }
+    },
+    UG: {
+      currency: "UGX", symbol: "USh", dialCode: "+256", min: 50000, max: 5000000, step: 50000,
+      lang: {
+        title: "Instant Express Loan",
+        subtitle: "Fast cash approvals directly to your mobile money",
+        country: "Select Country", name: "Full Name", phone: "Phone Number",
+        amount: "Loan Amount Needed", submit: "Apply Now",
+        success: "Success! Your application has been logged and is under instant review."
+      }
+    },
+    ZM: {
+      currency: "ZMW", symbol: "ZK", dialCode: "+260", min: 100, max: 20000, step: 100,
+      lang: {
+        title: "Fast Mobile Loans",
+        subtitle: "Quick cash solutions for everyday needs",
+        country: "Select Country", name: "Full Name", phone: "Phone Number",
+        amount: "Loan Amount", submit: "Submit Application",
+        success: "Thank you! Your application was submitted successfully."
+      }
+    },
+    CD: {
+      currency: "CDF", symbol: "FC", dialCode: "+243", min: 10000, max: 1000000, step: 5000,
+      lang: {
+        title: "Prêt Rapide en Ligne",
+        subtitle: "Obtenez un financement immédiat en quelques clics",
+        country: "Sélectionnez le pays", name: "Nom Complet", phone: "Numéro de Téléphone",
+        amount: "Montant du Prêt", submit: "Demander le Prêt",
+        success: "Succès! Votre demande de prêt a été soumise avec succès."
+      }
+    },
+    BW: {
+      currency: "BWP", symbol: "P", dialCode: "+267", min: 200, max: 25000, step: 100,
+      lang: {
+        title: "Quick Pula Loans",
+        subtitle: "Fast access to funds in Botswana",
+        country: "Select Country", name: "Full Name", phone: "Phone Number",
+        amount: "Loan Amount", submit: "Apply Now",
+        success: "Application received! We will contact you shortly."
+      }
+    },
+    ZA: {
+      currency: "ZAR", symbol: "R", dialCode: "+27", min: 500, max: 50000, step: 500,
+      lang: {
+        title: "Instant Cash Loans",
+        subtitle: "Flexible borrowing options tailor-made for you",
+        country: "Select Country", name: "Full Name", phone: "Phone Number",
+        amount: "Loan Amount", submit: "Complete Application",
+        success: "Success! Your loan request has been routed for instant decisioning."
+      }
+    }
+  };
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+  const countrySelect = document.getElementById("countrySelect");
+  const amountInput = document.getElementById("loanAmount");
+  const amountDisplay = document.getElementById("amountDisplay");
+  const phoneInput = document.getElementById("phone");
+  const loanForm = document.getElementById("loanForm");
+  const submitBtn = document.getElementById("btn-submit");
+  const responseAlert = document.getElementById("responseAlert");
 
-function escapeHTML(value) {
-  return String(value ?? '').replace(/[&<>"']/g, character => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;'
-  })[character]);
-}
+  let activeSymbol = "$";
 
-async function searchStays() {
-  const location = document
-    .getElementById('location')
-    .value.trim();
+  // Auto-update interface when country changes
+  countrySelect.addEventListener("change", (e) => {
+    const code = e.target.value;
+    const config = countryConfig[code];
+    if (!config) return;
 
-  const guests = Number(
-    document.getElementById('guests').value
-  );
+    // Switch Language Texts
+    document.getElementById("ui-title").innerText = config.lang.title;
+    document.getElementById("ui-subtitle").innerText = config.lang.subtitle;
+    document.getElementById("lbl-country").innerText = config.lang.country;
+    document.getElementById("lbl-name").innerText = config.lang.name;
+    document.getElementById("lbl-phone").innerText = config.lang.phone;
+    document.getElementById("lbl-amount").innerText = config.lang.amount;
+    submitBtn.innerText = config.lang.submit;
 
-  const propertyList = document.getElementById('propertyList');
+    // Set Phone Prefix & Slider Limits
+    phoneInput.value = config.dialCode + " ";
+    activeSymbol = config.symbol;
+    
+    amountInput.min = config.min;
+    amountInput.max = config.max;
+    amountInput.step = config.step;
+    amountInput.value = config.min;
 
-  propertyList.innerHTML =
-    '<p class="message">Searching properties...</p>';
+    updateAmountLabel(config.min, config.symbol);
+  });
 
-  let query = supabaseClient
-    .from('properties')
-    .select('*')
-    .eq('status', 'published');
+  // Dynamic Currency Formatting
+  amountInput.addEventListener("input", (e) => {
+    updateAmountLabel(e.target.value, activeSymbol);
+  });
 
-  if (location) {
-    query = query.ilike('town', `%${location}%`);
+  function updateAmountLabel(val, symbol) {
+    const formatted = new Intl.NumberFormat().format(val);
+    amountDisplay.innerText = `${symbol} ${formatted}`;
   }
 
-  if (guests > 0) {
-    query = query.gte('max_guests', guests);
-  }
+  // Live Database Submission
+  loanForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const selectedCountry = countrySelect.value;
+    if (!selectedCountry) return;
 
-  const { data, error } = await query;
+    const config = countryConfig[selectedCountry];
+    submitBtn.disabled = true;
+    responseAlert.style.display = "none";
 
-  if (error) {
-    console.error(error);
-    propertyList.innerHTML =
-      `<p class="message">Search error: ${escapeHTML(error.message)}</p>`;
-    return;
-  }
+    const payload = {
+      country_code: selectedCountry,
+      full_name: document.getElementById("fullName").value,
+      phone_number: phoneInput.value.trim(),
+      requested_amount: parseFloat(amountInput.value),
+      currency_code: config.currency
+    };
 
-  if (!data || data.length === 0) {
-    propertyList.innerHTML =
-      '<p class="message">No properties found. Try another destination.</p>';
-    return;
-  }
+    // Insert directly into Supabase
+    const { data, error } = await _supabase
+      .from('loan_applications')
+      .insert([payload]);
 
-  const propertyIds = data.map(property => property.id);
+    submitBtn.disabled = false;
 
-  const { data: photos, error: photoError } =
-    await supabaseClient
-      .from('property_images')
-      .select('property_id, image_url, display_order')
-      .in('property_id', propertyIds)
-      .order('display_order', { ascending: true });
-
-  if (photoError) {
-    console.error('Photo error:', photoError);
-  }
-
-  propertyList.innerHTML = data.map(property => {
-    const propertyPhotos = (photos || []).filter(
-      photo => photo.property_id === property.id
-    );
-
-    const gallery = propertyPhotos.length
-      ? propertyPhotos.map(photo => `
-          <img
-            src="${escapeHTML(photo.image_url)}"
-            alt="${escapeHTML(property.title)}"
-            loading="lazy"
-          >
-        `).join('')
-      : '<div class="no-photo">Property photos coming soon</div>';
-
-    const price = Number(property.price);
-    const priceDisplay = Number.isFinite(price)
-      ? price.toLocaleString()
-      : 'Price unavailable';
-
-    return `
-      <article class="property">
-
-        <div class="gallery">
-          ${gallery}
-        </div>
-
-        <div class="details">
-
-          <h3>${escapeHTML(property.title)}</h3>
-
-          <p class="muted">
-            ${escapeHTML(property.town || '')}
-          </p>
-
-          <div class="features">
-            ${property.bedrooms ?? '—'} bedrooms
-            · Up to ${property.max_guests ?? '—'} guests
-          </div>
-
-          <div class="price">
-            KES ${priceDisplay} per night
-          </div>
-
-        </div>
-
-      </article>
-    `;
-  }).join('');
-}
-
-// Load published properties when the homepage opens.
-searchStays();
+    if (error) {
+      responseAlert.className = "alert alert-error";
+      responseAlert.innerText = "Error submitting application: " + error.message;
+      responseAlert.style.display = "block";
+    } else {
+      responseAlert.className = "alert alert-success";
+      responseAlert.innerText = config.lang.success;
+      responseAlert.style.display = "block";
+      loanForm.reset();
+      amountDisplay.innerText = "0";
+    }
+  });
 </script>
-
 </body>
 </html>
