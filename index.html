@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pan-African Express Loans</title>
-  <!-- Load Supabase JS Client via CDN -->
+  <!-- Load Supabase Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -47,11 +47,10 @@
 <div class="loan-card">
   <div class="header">
     <h1 id="ui-title">Instant Personal Loan</h1>
-    <p id="ui-subtitle">Select your country to start your dynamic application</p>
+    <p id="ui-subtitle">Select your country to start your application</p>
   </div>
 
   <form id="loanForm">
-    <!-- Country Selector -->
     <div class="form-group">
       <label id="lbl-country" for="countrySelect">Select Target Country</label>
       <select id="countrySelect" required>
@@ -66,19 +65,16 @@
       </select>
     </div>
 
-    <!-- Applicant Name -->
     <div class="form-group">
       <label id="lbl-name" for="fullName">Full Name</label>
       <input type="text" id="fullName" placeholder="Jane Doe" required />
     </div>
 
-    <!-- Phone Number -->
     <div class="form-group">
       <label id="lbl-phone" for="phone">Mobile Phone Number</label>
       <input type="tel" id="phone" placeholder="+254..." required />
     </div>
 
-    <!-- Amount Slider -->
     <div class="form-group range-wrap">
       <label id="lbl-amount" for="loanAmount">Requested Loan Amount</label>
       <div class="amount-display" id="amountDisplay">0</div>
@@ -92,20 +88,20 @@
 </div>
 
 <script>
-  // Replace these with your actual Supabase URL and Public Anon Key
-  const SUPABASE_URL = '; https://cotreinqzluwgyiigffm.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_1pyuBC625Q-g2Mfpo2JA3w_V-OUtOjE';
+  // -------------------------------------------------------------
+  // PASTE YOUR SUPABASE KEYS FROM STEP 1 HERE:
+  // -------------------------------------------------------------
+  const SUPABASE_URL = 'https://qzkmwpqhdhowzqoudoex.supabase.co/rest/v1/';
+  const SUPABASE_ANON_KEY = 'sb_publishable_SCGYtG3cJGOMj-J6tYvNxQ_yMTPEB42';
   
-  // Initialize Supabase Client
   const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Dynamic Country Configuration (Languages, Dial Codes, Currencies, Ranges)
+  // Country dictionary setup (dynamic currency & dynamic languages)
   const countryConfig = {
     KE: {
       currency: "KES", symbol: "KSh", dialCode: "+254", min: 1000, max: 150000, step: 1000,
       lang: {
-        title: "Mkopo wa Haraka",
-        subtitle: "Omba mkopo wako kwa dakika chache tu",
+        title: "Mkopo wa Haraka", subtitle: "Omba mkopo wako kwa dakika chache tu",
         country: "Chagua Nchi", name: "Jina Kamili", phone: "Nambari ya Simu",
         amount: "Kiasi cha Mkopo", submit: "Tuma Maombi Sasa",
         success: "Imefanikiwa! Maombi yako ya mkopo yamepokelewa. Tutakupigia simu mara moja."
@@ -114,9 +110,8 @@
     TZ: {
       currency: "TZS", symbol: "TSh", dialCode: "+255", min: 20000, max: 3000000, step: 10000,
       lang: {
-        title: "Mkopo wa Papo Kwa Papo",
-        subtitle: "Pata mkopo kwa urahisi na haraka",
-        country: "Chagua Nchi", name: "Jina Bufuli", phone: "Nambari ya Simu",
+        title: "Mkopo wa Papo Kwa Papo", subtitle: "Pata mkopo kwa urahisi na haraka",
+        country: "Chagua Nchi", name: "Jina Kamili", phone: "Nambari ya Simu",
         amount: "Kiasi cha Mkopo", submit: "Omba Mkopo Sasa",
         success: "Hongera! Ombi lako limepokelewa kikamilifu."
       }
@@ -124,8 +119,7 @@
     UG: {
       currency: "UGX", symbol: "USh", dialCode: "+256", min: 50000, max: 5000000, step: 50000,
       lang: {
-        title: "Instant Express Loan",
-        subtitle: "Fast cash approvals directly to your mobile money",
+        title: "Instant Express Loan", subtitle: "Fast cash approvals directly to your mobile money",
         country: "Select Country", name: "Full Name", phone: "Phone Number",
         amount: "Loan Amount Needed", submit: "Apply Now",
         success: "Success! Your application has been logged and is under instant review."
@@ -134,8 +128,7 @@
     ZM: {
       currency: "ZMW", symbol: "ZK", dialCode: "+260", min: 100, max: 20000, step: 100,
       lang: {
-        title: "Fast Mobile Loans",
-        subtitle: "Quick cash solutions for everyday needs",
+        title: "Fast Mobile Loans", subtitle: "Quick cash solutions for everyday needs",
         country: "Select Country", name: "Full Name", phone: "Phone Number",
         amount: "Loan Amount", submit: "Submit Application",
         success: "Thank you! Your application was submitted successfully."
@@ -144,8 +137,7 @@
     CD: {
       currency: "CDF", symbol: "FC", dialCode: "+243", min: 10000, max: 1000000, step: 5000,
       lang: {
-        title: "Prêt Rapide en Ligne",
-        subtitle: "Obtenez un financement immédiat en quelques clics",
+        title: "Prêt Rapide en Ligne", subtitle: "Obtenez un financement immédiat en quelques clics",
         country: "Sélectionnez le pays", name: "Nom Complet", phone: "Numéro de Téléphone",
         amount: "Montant du Prêt", submit: "Demander le Prêt",
         success: "Succès! Votre demande de prêt a été soumise avec succès."
@@ -154,8 +146,7 @@
     BW: {
       currency: "BWP", symbol: "P", dialCode: "+267", min: 200, max: 25000, step: 100,
       lang: {
-        title: "Quick Pula Loans",
-        subtitle: "Fast access to funds in Botswana",
+        title: "Quick Pula Loans", subtitle: "Fast access to funds in Botswana",
         country: "Select Country", name: "Full Name", phone: "Phone Number",
         amount: "Loan Amount", submit: "Apply Now",
         success: "Application received! We will contact you shortly."
@@ -164,8 +155,7 @@
     ZA: {
       currency: "ZAR", symbol: "R", dialCode: "+27", min: 500, max: 50000, step: 500,
       lang: {
-        title: "Instant Cash Loans",
-        subtitle: "Flexible borrowing options tailor-made for you",
+        title: "Instant Cash Loans", subtitle: "Flexible borrowing options tailor-made for you",
         country: "Select Country", name: "Full Name", phone: "Phone Number",
         amount: "Loan Amount", submit: "Complete Application",
         success: "Success! Your loan request has been routed for instant decisioning."
@@ -183,13 +173,13 @@
 
   let activeSymbol = "$";
 
-  // Auto-update interface when country changes
+  // Country switch logic
   countrySelect.addEventListener("change", (e) => {
     const code = e.target.value;
     const config = countryConfig[code];
     if (!config) return;
 
-    // Switch Language Texts
+    // Switch Language
     document.getElementById("ui-title").innerText = config.lang.title;
     document.getElementById("ui-subtitle").innerText = config.lang.subtitle;
     document.getElementById("lbl-country").innerText = config.lang.country;
@@ -198,7 +188,7 @@
     document.getElementById("lbl-amount").innerText = config.lang.amount;
     submitBtn.innerText = config.lang.submit;
 
-    // Set Phone Prefix & Slider Limits
+    // Set Phone Code & Boundaries
     phoneInput.value = config.dialCode + " ";
     activeSymbol = config.symbol;
     
@@ -210,7 +200,7 @@
     updateAmountLabel(config.min, config.symbol);
   });
 
-  // Dynamic Currency Formatting
+  // Dynamic Currency Input
   amountInput.addEventListener("input", (e) => {
     updateAmountLabel(e.target.value, activeSymbol);
   });
@@ -220,7 +210,7 @@
     amountDisplay.innerText = `${symbol} ${formatted}`;
   }
 
-  // Live Database Submission
+  // Handle Form Submission directly into Database
   loanForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const selectedCountry = countrySelect.value;
@@ -238,7 +228,6 @@
       currency_code: config.currency
     };
 
-    // Insert directly into Supabase
     const { data, error } = await _supabase
       .from('loan_applications')
       .insert([payload]);
@@ -247,7 +236,7 @@
 
     if (error) {
       responseAlert.className = "alert alert-error";
-      responseAlert.innerText = "Error submitting application: " + error.message;
+      responseAlert.innerText = "Error: " + error.message;
       responseAlert.style.display = "block";
     } else {
       responseAlert.className = "alert alert-success";
